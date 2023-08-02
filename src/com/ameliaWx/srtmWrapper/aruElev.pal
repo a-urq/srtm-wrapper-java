@@ -1,0 +1,23 @@
+;
+; Full range elevation color table
+; Made by Zander Urquhart
+;
+
+Product: RV
+Units:   ft
+Step:    10
+Scale:   3.28084
+
+Color:      0      0    0   64
+Color:      0.1   77  141  106
+Color:    250    248  255  177
+Color:    500      0  255    0
+Color:   1000      0   64    0 
+Color:   2640    241  173    0  100    0    0
+Color:   5280     64    0   64  255  128  255
+Color:   7920    206   96   36 
+Color:  10560     64    0   18 
+Color:  15480    255  255  255 
+Color:  21120     90   90   90
+Color:  26400    128  255  255
+Color:  31680      0   64   64
