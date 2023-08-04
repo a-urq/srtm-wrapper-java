@@ -348,6 +348,52 @@ public class SrtmModel {
 		}
 	}
 
+	public short[][] loadElevData(int fileI, int fileJ, int resDivider) {
+//		System.out.println("most recently used cache slot: " + mostRecentlyUsedCacheSlot);
+//		System.out.println("most recently loaded cache slot: " + mostRecentlyLoadedCacheSlot);
+		
+		String dataResourcePath = "srtmData/srtm_" + String.format("%02d", fileI) + "_" + String.format("%02d", fileJ)
+				+ ".elev.gz";
+
+		boolean resourceExists = checkIfResourceExists(dataResourcePath);
+
+		if (resourceExists) {
+			File dataFile = loadResourceAsFile(dataResourcePath);
+			String dataFilePath = dataFile.getAbsolutePath();
+			String dataFileUnzipPath = dataFilePath.substring(0, dataFilePath.length() - 3);
+
+			decompressGzipFile(dataFilePath, dataFileUnzipPath);
+			dataFile.delete();
+
+			try {
+				File dataFileUnzipped = new File(dataFileUnzipPath);
+
+				short[][] elevData = loadElev(dataFileUnzipped);
+				dataFileUnzipped.delete();
+				
+				short[][] elevDataDs = downsampleElevData(elevData, resDivider);
+
+				return elevDataDs;
+			} catch (IOException e) {
+				return new short[2000/resDivider][2000/resDivider];
+			}
+		} else {
+			return new short[2000/resDivider][2000/resDivider];
+		}
+	}
+	
+	private short[][] downsampleElevData(short[][] elevData, int resDivider) {
+		short[][] ret = new short[2000/resDivider][2000/resDivider];
+		
+		for (int i = 0; i < ret.length; i++) {
+			for (int j = 0; j < ret[0].length; j++) {
+				ret[i][j] = elevData[resDivider * i][resDivider * j];
+			}
+		}
+		
+		return ret;
+	}
+
 	private static void mainOld(String[] args) throws IOException {
 		for (int i = 100; i <= 28; i++) {
 			for (int j = 100; j <= 9; j++) {
